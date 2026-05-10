@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADHD 성향 자가 진단</title>
+    <style>
+        :root {
+            --main-color: #ec4899; /* ADHD 버전은 생동감 있는 핑크/퍼플 계열 */
+            --sub-color: #fff1f2;
+            --text-color: #334155;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background-color: #fef2f2;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .card {
+            background: var(--white);
+            max-width: 500px;
+            width: 100%;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(236, 72, 153, 0.1);
+            padding: 45px 35px;
+            text-align: center;
+        }
+
+        .header-label {
+            color: var(--main-color);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        h1 { font-size: 26px; margin: 0 0 10px 0; color: #1e293b; }
+        .subtitle { color: #64748b; font-size: 15px; margin-bottom: 35px; }
+
+        .survey-list { text-align: left; margin-bottom: 35px; }
+        .item {
+            display: flex;
+            align-items: flex-start;
+            background: var(--sub-color);
+            margin-bottom: 10px;
+            padding: 18px;
+            border-radius: 14px;
+            transition: 0.2s;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            margin-right: 15px;
+            cursor: pointer;
+            accent-color: var(--main-color);
+        }
+
+        .item label { cursor: pointer; font-size: 15.5px; line-height: 1.5; color: #475569; width: 100%; }
+
+        .btn-submit {
+            background: var(--main-color);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 18px;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover { background: #db2777; }
+
+        #result-page { display: none; }
+        .score-display {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--main-color);
+            margin-bottom: 5px;
+        }
+        .score-total { font-size: 18px; color: #94a3b8; margin-bottom: 25px; }
+        .status-title { font-size: 22px; font-weight: 700; margin-bottom: 12px; color: #1e293b; }
+        .description { color: #64748b; line-height: 1.7; margin-bottom: 35px; font-size: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div id="survey-page">
+        <div class="header-label">ADHD Self-Check</div>
+        <h1>집중력 및 충동성 진단</h1>
+        <p class="subtitle">나의 주의집중력 상태를 객관적으로 체크해보세요.</p>
+        
+        <div class="survey-list">
+            <div class="item"><input type="checkbox" id="q1" class="q"><label for="q1">어떤 일의 어려운 부분은 다 해놓고, 마무리를 못해 끝내지 못할 때가 많다.</label></div>
+            <div class="item"><input type="checkbox" id="q2" class="q"><label for="q2">체계적인 계획이 필요한 일을 할 때 순서를 정하는 것이 힘들다.</label></div>
+            <div class="item"><input type="checkbox" id="q3" class="q"><label for="q3">약속이나 해야 할 일을 잊어버려 곤란했던 적이 자주 있다.</label></div>
+            <div class="item"><input type="checkbox" id="q4" class="q"><label for="q4">골치 아픈 일(공부, 수행평가 등)은 미룰 수 있을 때까지 미룬다.</label></div>
+            <div class="item"><input type="checkbox" id="q5" class="q"><label for="q5">오래 앉아 있어야 할 때 손을 만지작거리거나 발을 꼼지락거린다.</label></div>
+            <div class="item"><input type="checkbox" id="q6" class="q"><label for="q6">마치 모터가 달린 것처럼 끊임없이 활동하거나 과하게 움직인다.</label></div>
+            <div class="item"><input type="checkbox" id="q7" class="q"><label for="q7">지루하거나 어려운 글을 읽을 때 내용을 자꾸 놓쳐서 다시 읽어야 한다.</label></div>
+            <div class="item"><input type="checkbox" id="q8" class="q"><label for="q8">대화 중 상대방이 말을 끝내기 전에 내 할 말이 생각나서 말을 끊게 된다.</label></div>
+            <div class="item"><input type="checkbox" id="q9" class="q"><label for="q9">주변에서 들리는 작은 소음에도 금방 주의가 산만해진다.</label></div>
+            <div class="item"><input type="checkbox" id="q10" class="q"><label for="q10">물건(지갑, 폰, 교과서 등)을 어디 두었는지 몰라 한참 찾는 일이 잦다.</label></div>
+        </div>
+
+        <button class="btn-submit" onclick="showResult()">집중력 상태 분석</button>
+    </div>
+
+    <div id="result-page">
+        <div class="header-label">Analysis Report</div>
+        <div class="score-display"><span id="score-val">0</span></div>
+        <div class="score-total">/ 10 points</div>
+        <div class="status-title" id="status-text">분석 결과</div>
+        <p class="description" id="desc-text"></p>
+        <button class="btn-submit" style="background: #f1f5f9; color: #64748b;" onclick="location.reload()">다시 테스트하기</button>
+    </div>
+</div>
+
+<script>
+    function showResult() {
+        const checked = document.querySelectorAll('.q:checked').length;
+        document.getElementById('survey-page').style.display = 'none';
+        document.getElementById('result-page').style.display = 'block';
+        
+        const scoreElem = document.getElementById('score-val');
+        const statusElem = document.getElementById('status-text');
+        const descElem = document.getElementById('desc-text');
+
+        scoreElem.innerText = checked;
+
+        if(checked <= 3) {
+            statusElem.innerText = "양호 (Stable)";
+            statusElem.style.color = "#10b981";
+            descElem.innerText = "현재 주의력과 충동 조절 능력이 안정적입니다. 일의 우선순위를 정하고 마무리하는 습관이 잘 잡혀 있네요.";
+        } else if(checked <= 6) {
+            statusElem.innerText = "주의 (Careful)";
+            statusElem.style.color = "#4f46e5";
+            descElem.innerText = "가끔 집중력이 흐트러지거나 충동적인 경향이 보입니다. 짧은 집중 훈련을 통해 실행 기능을 보완할 필요가 있습니다.";
+        } else {
+            statusElem.innerText = "관리 필요 (High Risk)";
+            statusElem.style.color = "#ec4899";
+            descElem.innerText = "ADHD 성향이 높게 나타납니다. 일상 생활과 학습 효율을 높이기 위해 체계적인 집중력 강화 훈련(AI 솔루션)을 권장합니다.";
+        }
+    }
+</script>
+
+</body>
+</html>
